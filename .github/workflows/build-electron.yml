@@ -34,6 +34,7 @@ jobs:
         env:
           # 避免 GitHub Actions 中弹出签名提示（macOS）
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          APPLE_NOTARIZE: false
           # 如果需要签名，请配置 secrets 并传入证书
 
       - name: Upload build artifacts

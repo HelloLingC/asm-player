@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const path = require('path');
 
 const createWindow = () => {
@@ -18,7 +18,21 @@ const createWindow = () => {
     // Load from Vite dev server in development
     win.loadURL('http://localhost:5175')
   }
-  win.webContents.openDevTools();
+
+  // Register keyboard shortcuts
+  // F12 or Ctrl+Shift+I to toggle DevTools
+  globalShortcut.register('F12', () => {
+    win.webContents.toggleDevTools();
+  });
+
+  globalShortcut.register('CommandOrControl+Shift+I', () => {
+    win.webContents.toggleDevTools();
+  });
+
+  // Cleanup shortcuts when window is closed
+  win.on('closed', () => {
+    globalShortcut.unregisterAll();
+  });
 }
 
 app.on('ready', () => {
