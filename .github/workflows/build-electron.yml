@@ -1,17 +1,30 @@
-name: Build Electron App
+name: Build and Release Electron App
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os:
+          - windows-latest
+          - macos-latest
+          - ubuntu-latest
+    env:
+      SHOULD_PUBLISH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
 
     steps:
       - name: Checkout code
@@ -21,27 +34,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Vite
+      - name: Build renderer bundle
         run: npm run build:renderer
 
-      - name: Build Electron app
+      - name: Build Electron app (no publish)
+        if: env.SHOULD_PUBLISH != 'true'
         run: npm run build
         env:
-          # 避免 GitHub Actions 中弹出签名提示（macOS）
           CSC_IDENTITY_AUTO_DISCOVERY: false
           APPLE_NOTARIZE: false
-          # 如果需要签名，请配置 secrets 并传入证书
+
+      - name: Build and publish Electron app
+        if: env.SHOULD_PUBLISH == 'true'
+        run: npm run build -- --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          APPLE_NOTARIZE: false
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: electron-app-${{ matrix.os }}
-          path: |
-            dist/
-            !dist/*.blockmap
-            !dist/latest.yml
+          name: asmrplayer-${{ matrix.os }}
+          path: releases/
+          if-no-files-found: error
