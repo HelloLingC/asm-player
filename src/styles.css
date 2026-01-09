@@ -1,0 +1,416 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.player {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.drop-area {
+  border: 3px dashed #ccc;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.drop-area:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background-color: #f5f5f5;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.controls button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.controls button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.controls button:active {
+  transform: scale(0.95);
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.volume span {
+  font-size: 20px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+.progress {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.playlist {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.playlist-item {
+  padding: 12px 15px;
+  background: #f5f5f5;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #333;
+}
+
+.playlist-item:hover {
+  background: #e0e0e0;
+  transform: translateX(5px);
+}
+
+.playlist-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.playlist::-webkit-scrollbar {
+  width: 8px;
+}
+
+.playlist::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+.playlist::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Subtitle Display */
+.subtitle-display {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.subtitle-text {
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.subtitle-text div {
+  margin: 2px 0;
+}
+
+.subtitle-display.subtitle-inactive {
+  opacity: 0.6;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.subtitle-display.subtitle-inactive .subtitle-text {
+  color: #666;
+  font-style: italic;
+}
+
+/* Subtitle Controls */
+.subtitle-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.subtitle-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  font-weight: 500;
+}
+
+.subtitle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.subtitle-btn:active {
+  transform: translateY(0);
+}
+
+.subtitle-btn-drag-over {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.7);
+  border: 2px solid rgba(102, 126, 234, 0.8);
+}
+
+.subtitle-btn.clear-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+}
+
+.subtitle-btn.clear-btn:hover {
+  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+}
+
+.subtitle-btn.fullscreen-btn {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+}
+
+.subtitle-btn.fullscreen-btn:hover {
+  box-shadow: 0 6px 20px rgba(56, 239, 125, 0.5);
+}
+
+/* Fullscreen Subtitle Mode */
+.fullscreen-subtitle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fullscreen-subtitle-container {
+  width: 90%;
+  max-width: 1200px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.fullscreen-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.fullscreen-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: rotate(90deg);
+}
+
+.fullscreen-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.fullscreen-status {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.fullscreen-track-info {
+  font-size: 16px;
+}
+
+.fullscreen-subtitle-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.fullscreen-subtitle-text {
+  text-align: center;
+  color: white;
+  font-size: 64px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  animation: subtitleFadeIn 0.3s ease;
+}
+
+@keyframes subtitleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fullscreen-subtitle-text div {
+  margin: 10px 0;
+}
+
+.fullscreen-subtitle-placeholder {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 32px;
+  font-style: italic;
+}
+
+.fullscreen-controls-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+}
+
+.fullscreen-controls-hint span:nth-child(2) {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive fullscreen subtitle */
+@media (max-width: 768px) {
+  .fullscreen-subtitle-text {
+    font-size: 36px;
+  }
+
+  .fullscreen-controls-hint {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .fullscreen-controls-hint span:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (min-width: 1920px) {
+  .fullscreen-subtitle-text {
+    font-size: 96px;
+  }
+}
