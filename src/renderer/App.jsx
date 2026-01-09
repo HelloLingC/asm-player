@@ -4,6 +4,9 @@ import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
 import SubtitleDisplay from './SubtitleDisplay';
 import FullscreenSubtitle from './FullscreenSubtitle';
 
+const PROGRESS_FILL_COLOR = '#38ef7d';
+const PROGRESS_REMAINING_COLOR = '#d9d9d9';
+
 export default function App() {
   const [playlist, setPlaylist] = useState([]);
   const [currentTrack, setCurrentTrack] = useState(-1);
@@ -211,6 +214,8 @@ export default function App() {
     }
   };
 
+  const progressBackground = `linear-gradient(90deg, ${PROGRESS_FILL_COLOR} 0%, ${PROGRESS_FILL_COLOR} ${progress}%, ${PROGRESS_REMAINING_COLOR} ${progress}%, ${PROGRESS_REMAINING_COLOR} 100%)`;
+
   return (
     <div className="player">
       <div
@@ -256,6 +261,7 @@ export default function App() {
         max="100"
         value={progress}
         onChange={handleProgressChange}
+        style={{ background: progressBackground }}
       />
 
       <SubtitleDisplay subtitle={currentSubtitle} isActive={isCurrentActive} />

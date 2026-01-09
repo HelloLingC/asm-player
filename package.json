@@ -20,7 +20,8 @@
       "output": "releases"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "appicons/icon.ico"
     },
     "mac": {
       "target": "dmg",
