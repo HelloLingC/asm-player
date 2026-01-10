@@ -16,7 +16,10 @@ export default function FullscreenSubtitle({ subtitle, onClose, isPlaying, curre
   }, [onClose, onPlayPause]);
 
   return (
-    <div className="animate-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 sm:p-10" onClick={onClose}>
+    <div
+      className="animate-overlay absolute inset-0 z-50 flex items-center justify-center rounded-[clamp(20px,3vw,36px)] bg-black/95 p-4 sm:p-10"
+      onClick={onClose}
+    >
       <div
         className="relative flex h-[80vh] w-full max-w-5xl flex-col rounded-[32px] border border-white/15 bg-gradient-to-b from-white/10 to-white/5 p-6 text-white shadow-2xl backdrop-blur"
         onClick={(e) => e.stopPropagation()}

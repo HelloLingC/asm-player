@@ -1,11 +1,25 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain, powerSaveBlocker } = require('electron');
 const path = require('path');
+
+let fullscreenBlockerId = null;
+
+const setFullscreenKeepAwake = (shouldPreventSleep) => {
+  if (shouldPreventSleep) {
+    if (fullscreenBlockerId === null) {
+      fullscreenBlockerId = powerSaveBlocker.start('display');
+    }
+  } else if (fullscreenBlockerId !== null) {
+    powerSaveBlocker.stop(fullscreenBlockerId);
+    fullscreenBlockerId = null;
+  }
+};
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true
     }
@@ -35,6 +49,11 @@ const createWindow = () => {
   });
 }
 
+ipcMain.handle('fullscreen-keep-awake', (_event, shouldPreventSleep) => {
+  setFullscreenKeepAwake(Boolean(shouldPreventSleep));
+  return fullscreenBlockerId !== null;
+});
+
 app.on('ready', () => {
   createWindow();
 })
@@ -44,3 +63,7 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 })
+
+app.on('before-quit', () => {
+  setFullscreenKeepAwake(false);
+});
