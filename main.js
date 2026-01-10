@@ -16,7 +16,7 @@ const createWindow = () => {
     win.loadFile(path.join(__dirname, 'dist/index.html'));
   } else {
     // Load from Vite dev server in development
-    win.loadURL('http://localhost:5175')
+    win.loadURL('http://localhost:5173')
   }
 
   // Register keyboard shortcuts
