@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
 import SubtitleDisplay from './SubtitleDisplay';
 import FullscreenSubtitle from './FullscreenSubtitle';
-import AudioDropZone from './components/AudioDropZone';
 import PlaybackControls from './components/PlaybackControls';
 import SubtitleControls from './components/SubtitleControls';
 import Playlist from './components/Playlist';
@@ -282,8 +281,6 @@ export default function App() {
 
       <div className="w-full max-w-[clamp(640px,70vw,1080px)] rounded-[clamp(20px,3vw,36px)] bg-white/95 p-6 text-slate-700 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur sm:p-8 lg:p-10">
        <div className="flex flex-col gap-6 text-[clamp(16px,1.4vw,20px)]">
-          <AudioDropZone onFilesSelected={handleFiles} />
-
           <audio
             ref={audioRef}
             preload="metadata"
@@ -312,7 +309,7 @@ export default function App() {
             onClear={clearSubtitles}
           />
 
-          <Playlist tracks={playlist} currentTrackIndex={currentTrack} onSelectTrack={loadTrack} />
+          <Playlist tracks={playlist} currentTrackIndex={currentTrack} onSelectTrack={loadTrack} onFilesSelected={handleFiles} />
         </div>
       </div>
     </div>
