@@ -6,7 +6,7 @@ let fullscreenBlockerId = null;
 const setFullscreenKeepAwake = (shouldPreventSleep) => {
   if (shouldPreventSleep) {
     if (fullscreenBlockerId === null) {
-      fullscreenBlockerId = powerSaveBlocker.start('display');
+      fullscreenBlockerId = powerSaveBlocker.start('prevent-display-sleep');
     }
   } else if (fullscreenBlockerId !== null) {
     powerSaveBlocker.stop(fullscreenBlockerId);

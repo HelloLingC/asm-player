@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
 
-export default function FullscreenSubtitle({ subtitle, onClose, isPlaying, currentTrack, onPlayPause }) {
+export default function FullscreenSubtitle({ subtitle, onClose, isPlaying, currentTrack }) {
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === ' ') {
         e.preventDefault();
-        onPlayPause();
+        onClose();
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [onClose, onPlayPause]);
+  }, [onClose]);
 
   return (
     <div
@@ -58,7 +56,9 @@ export default function FullscreenSubtitle({ subtitle, onClose, isPlaying, curre
 
         <div className="flex flex-wrap items-center justify-center gap-3 border-t border-white/10 pt-4 text-sm uppercase tracking-wider text-white/50">
           <span>Press SPACE to play/pause</span>
-          <span className="hidden text-white/30 sm:inline">•</span>
+          <span className="hidden text-white/30 sm:inline">|</span>
+          <span>Use LEFT/RIGHT for +/-5s</span>
+          <span className="hidden text-white/30 sm:inline">|</span>
           <span>Press ESC to exit</span>
         </div>
       </div>

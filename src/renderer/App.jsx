@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { parseSRT, getCurrentSubtitle } from '../utils/srtParser';
 import SubtitleDisplay from './SubtitleDisplay';
 import FullscreenSubtitle from './FullscreenSubtitle';
@@ -6,6 +6,8 @@ import AudioDropZone from './components/AudioDropZone';
 import PlaybackControls from './components/PlaybackControls';
 import SubtitleControls from './components/SubtitleControls';
 import Playlist from './components/Playlist';
+
+const SEEK_INTERVAL_SECONDS = 5;
 
 export default function App() {
   const [playlist, setPlaylist] = useState([]);
@@ -119,27 +121,37 @@ export default function App() {
     });
   };
 
-  const loadTrack = (index, playlistToUse = playlist) => {
-    if (index < 0 || index >= playlistToUse.length) return;
-    setCurrentTrack(index);
-    if (audioRef.current) {
-      audioRef.current.src = playlistToUse[index].path;
-      audioRef.current.load();
-    }
-  };
-
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      if (currentTrack === -1 && playlist.length > 0) {
-        loadTrack(0);
+  const loadTrack = useCallback(
+    (index, playlistOverride) => {
+      const list = playlistOverride ?? playlist;
+      if (!list || index < 0 || index >= list.length) return;
+      setCurrentTrack(index);
+      if (audioRef.current) {
+        audioRef.current.src = list[index].path;
+        audioRef.current.load();
       }
-      audioRef.current?.play();
-      setIsPlaying(true);
+    },
+    [playlist],
+  );
+
+  const handlePlayPause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
     }
-  };
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    if (currentTrack === -1 && playlist.length > 0) {
+      loadTrack(0);
+    }
+    audioRef.current?.play();
+    setIsPlaying(true);
+  }, [isPlaying, currentTrack, playlist, loadTrack]);
 
   const handleStop = () => {
     if (audioRef.current) {
@@ -192,12 +204,69 @@ export default function App() {
     }
   };
 
+  const handleSeek = useCallback((offsetSeconds) => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    const duration = Number.isFinite(audio.duration) ? audio.duration : null;
+    const currentTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+    let nextTime = currentTime + offsetSeconds;
+
+    if (duration !== null) {
+      nextTime = Math.min(Math.max(nextTime, 0), duration);
+    } else {
+      nextTime = Math.max(nextTime, 0);
+    }
+
+    audio.currentTime = nextTime;
+
+    if (duration && duration > 0) {
+      setProgress((nextTime / duration) * 100);
+    }
+  }, []);
+
   const handleEnded = () => {
     if (currentTrack < playlist.length - 1) {
       loadTrack(currentTrack + 1);
       setTimeout(() => audioRef.current?.play(), 100);
     }
   };
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const handleGlobalKeyDown = (event) => {
+      const target = event.target;
+      const tagName = target?.tagName;
+      const isEditable =
+        target?.isContentEditable ||
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        tagName === 'SELECT';
+
+      if (isEditable) {
+        return;
+      }
+
+      if (event.code === 'Space' || event.key === ' ') {
+        event.preventDefault();
+        handlePlayPause();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        handleSeek(SEEK_INTERVAL_SECONDS);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        handleSeek(-SEEK_INTERVAL_SECONDS);
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [handlePlayPause, handleSeek]);
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-500/90 to-purple-700 px-4 py-8 sm:px-8 lg:px-12">
@@ -208,7 +277,6 @@ export default function App() {
             onClose={exitFullscreenMode}
             isPlaying={isPlaying}
             currentTrack={currentTrack}
-            onPlayPause={handlePlayPause}
           />
         )}
 
